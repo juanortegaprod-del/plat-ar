@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PLÅT en tu casa</title>
+<script type="module" src="model-viewer.min.js"></script>
+<style>
+/* Una ficha de catálogo: la silla grande al centro, el botón de AR como acción principal, medidas al pie */
+:root{
+  --bg:#F3EEE6; --surface:#FBF8F3; --fg:#2F3A28; --muted:#6E7865;
+  --accent:#6F8A62; --accent-ink:#FFFFFF; --line:#D9D2C4;
+  --font:"Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1C2019; --surface:#252B21; --fg:#E9EDE4; --muted:#A3AD99;
+  --accent:#8FAA80; --accent-ink:#14180F; --line:#3A4234; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1C2019; --surface:#252B21; --fg:#E9EDE4; --muted:#A3AD99;
+  --accent:#8FAA80; --accent-ink:#14180F; --line:#3A4234; color-scheme:dark}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:720px;margin:0 auto;padding-block:24px 32px;display:flex;flex-direction:column;gap:18px;min-height:100%;box-sizing:border-box}
+header{text-align:center;display:flex;flex-direction:column;gap:4px}
+h1{margin:0;font-weight:300;font-size:clamp(48px,12vw,84px);letter-spacing:.06em;line-height:1;color:var(--accent)}
+.sub{margin:0;font-size:15px;letter-spacing:.08em;color:var(--muted)}
+model-viewer{width:100%;flex:1;min-height:420px;max-height:62vh;background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  --poster-color:transparent;--progress-bar-color:var(--accent)}
+.ar-btn{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);border:0;border-radius:999px;
+  background:var(--accent);color:var(--accent-ink);font:600 16px var(--font);padding:14px 26px;
+  display:flex;align-items:center;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);cursor:pointer}
+.ar-btn:focus-visible{outline:3px solid var(--fg);outline-offset:3px}
+.ar-btn svg{width:20px;height:20px}
+.hint{text-align:center;font-size:14px;color:var(--muted);margin:0}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0}
+.specs div{text-align:center;padding:10px 4px;border-top:1px solid var(--line)}
+.specs dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.specs dd{margin:4px 0 0;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+footer{text-align:center;font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+@media (prefers-reduced-motion: reduce){model-viewer{--auto-rotate:0}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <h1>PLÅT</h1>
+    <p class="sub">Silla de chapa y guatambú</p>
+  </header>
+
+  <model-viewer id="silla" src="plat.glb" ios-src="plat.usdz" alt="Silla PLÅT en 3D: asiento y respaldo de chapa verde, patas de guatambú"
+    ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor"
+    camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1500" rotation-per-second="18deg"
+    camera-orbit="35deg 72deg auto" shadow-intensity="1" shadow-softness=".8" exposure="1.05" environment-image="neutral">
+    <button slot="ar-button" class="ar-btn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>
+      Ver en tu casa
+    </button>
+  </model-viewer>
+
+  <p class="hint" id="hint">Girala con el dedo. Desde el celular, tocá "Ver en tu casa" y apuntá al piso.</p>
+
+  <dl class="specs">
+    <div><dt>Ancho</dt><dd>42 cm</dd></div>
+    <div><dt>Profundidad</dt><dd>51 cm</dd></div>
+    <div><dt>Alto</dt><dd>86 cm</dd></div>
+  </dl>
+
+  <footer>Juan Augusto Ortega · Diseño Industrial IV · Cátedra Lerner · UP 2026</footer>
+</div>
+
+<script>
+  const mv = document.getElementById('silla');
+  const hint = document.getElementById('hint');
+  mv.addEventListener('load', () => {
+    if (!mv.canActivateAR) hint.textContent = 'Girala con el dedo o el mouse. Para verla en escala real, abrí esta página desde el celular.';
+  });
+  mv.addEventListener('ar-status', e => {
+    if (e.detail.status === 'failed') hint.textContent = 'No se pudo abrir la cámara en este dispositivo. Probá desde Chrome (Android) o Safari (iPhone).';
+  });
+</script>
+
+</body>
+</html>
